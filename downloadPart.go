@@ -2,14 +2,21 @@ package ytdl
 
 import (
   "errors"
-
-  "github.com/smallnest/goreq"
+  "net/http"
+  "io/ioutil"
 )
 
 func downloadPart(url string) (string, error) {
-  resp, data, reqErr := goreq.New().Get(url).End()
+  resp, err := http.Get(url)
+  if err != nil
+    return "", err
+  defer resp.Body.Close()
 
-  if resp.StatusCode != 200 || reqErr != nil {
+  body, err := ioutil.ReadAll(resp.Body)
+  if err != nil
+    return "", err
+
+  if resp.StatusCode != 200 {
     return "", errors.New("Could not download the Video-Part")
   }
 
